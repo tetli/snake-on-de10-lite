@@ -1,9 +1,9 @@
 
-#define FLOoR_FRAME_WIDTH 20
+#define FLOOR_FRAME_WIDTH 20
 #define FLOOR_FRAME_HEIGHT 10
 
 // 0 = empty, 1 = black, 2 = gray (light)
-const int floorTileSprite[20][10] = {
+const int floorTileSprite[10][20] = {
     {0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,1,1,2,2,2,2,1,1,0,0,0,0,0,0},
     {0,0,0,0,1,1,2,2,2,2,2,2,2,2,1,1,0,0,0,0},
