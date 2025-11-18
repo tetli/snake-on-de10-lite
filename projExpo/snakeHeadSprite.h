@@ -1,8 +1,8 @@
 #ifndef SNAKE_HEAD_SPRITE_H
 #define SNAKE_HEAD_SPRITE_H
 
-#define FLOOR_FRAME_WIDTH 20
-#define FLOOR_FRAME_HEIGHT 20
+#define SNAKE_HEAD_FRAME_WIDTH 20
+#define SNAKE_HEAD_FRAME_HEIGHT 20
 
 // Färgkoder:
 // 0 = empty
