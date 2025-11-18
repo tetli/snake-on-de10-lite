@@ -244,6 +244,46 @@ void check_snake_collision(){
     }
 }
 
+void draw_floor_tile(int gridX, int gridY) {
+    // Isometric calculation / tranformation off cordinates
+    int px = (gridX - gridY) * FLOOR_FRAME_WIDTH / 2 + OFFSET_X;
+    int py = (gridX + gridY) * FLOOR_FRAME_HEIGHT / 2 + OFFSET_Y;
+
+    for (int y = 0; y < FLOOR_FRAME_HEIGHT; y++) {
+        for (int x = 0; x < FLOOR_FRAME_WIDTH; x++) {
+            int color = floorTileSprite[y][x];
+            if (color != 0) {  // 0 = empty
+                int screenX = px + x;
+                int screenY = py + y;
+                if (screenX >= 0 && screenX < SCREEN_WIDTH &&
+                    screenY >= 0 && screenY < SCREEN_HEIGHT) {
+                    screen[screenX][screenY] = color;
+                }
+            }
+        }
+    }
+}
+
+void draw_snake_head(int gridX, int gridY) {
+    // Isometric calculation / tranformation off cordinates
+    int px = (gridX - gridY) * SNAKE_HEAD_FRAME_WIDTH / 2 + OFFSET_X;
+    int py = (gridX + gridY) * SNAKE_HEAD_FRAME_HEIGHT / 2 + OFFSET_Y - SNAKE_HEAD_FRAME_HEIGHT/2;
+
+    for (int y = 0; y < SNAKE_HEAD_FRAME_HEIGHT; y++) {
+        for (int x = 0; x < SNAKE_HEAD_FRAME_WIDTH; x++) {
+            int color = floorTileSprite[y][x];
+            if (color != 0) {  // 0 = empty
+                int screenX = px + x;
+                int screenY = py + y;
+                if (screenX >= 0 && screenX < SCREEN_WIDTH &&
+                    screenY >= 0 && screenY < SCREEN_HEIGHT) {
+                    screen[screenX][screenY] = color;
+                }
+            }
+        }
+    }
+}
+
 void clear_grid(){
   for (int i = 0; i < MAP_XWIDTH; i++)
   {
