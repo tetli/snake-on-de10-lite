@@ -6,6 +6,10 @@
 
 /* Below functions are external and found in other files. */
 
+#include "floorSprite.h"
+#include "snakeHeadSprite.h"
+
+
 #define TIMER_BASE 0x04000020
 
 #define TIMER_STATUS (*(volatile int *)(TIMER_BASE + 0x00))
@@ -31,6 +35,11 @@ static int screen[SCREEN_WIDTH][SCREEN_HEIGHT] = {0};
 #define MAP_YHEIGHT 12
 
 static int gridmap[MAP_XWIDTH][MAP_YHEIGHT] = {0};
+
+#define OFFSET_X (SCREEN_WIDTH / 2)  // center horizontally
+#define OFFSET_Y 50 // distance from the top
+
+ 
 
 /* Directions */
 #define DIR_NONE  0
@@ -185,7 +194,7 @@ int get_input(){
 
 int valid_dir(int input){
   if (input == DIR_UP || input == DIR_DOWN || input == DIR_LEFT || input == DIR_RIGHT) {
-        /* prevent 180-degree reversal */
+        /* Prevent 180-degree reversal */
         if (!((dir == DIR_UP && input == DIR_DOWN) ||
               (dir == DIR_DOWN && input == DIR_UP) ||
               (dir == DIR_LEFT && input == DIR_RIGHT) ||
@@ -210,6 +219,7 @@ void move_snake(){
     else if (dir == DIR_DOWN) headY++;
     else if (dir == DIR_LEFT) headX--;
     else if (dir == DIR_RIGHT) headX++;
+  
 }
 
 
@@ -223,16 +233,68 @@ int check_fruit_collision(){
 }
 
 void check_snake_collision(){
-  // Check walls
+  // Check head into walls
   if (headX < 0 || headX >= MAP_XWIDTH || headY < 0 || headY >= MAP_YHEIGHT)
       gameover = 1;
 
-  // Check tail collision
+  // Check head into tail collision
   for (int i = 0; i < tailLength; i++) {
     if (tailX[i] == headX && tailY[i] == headY)
       gameover = 1;
     }
 }
+
+void clear_grid(){
+  for (int i = 0; i < MAP_XWIDTH; i++)
+  {
+    for(int j = 0; j < MAP_YHEIGHT; j++){
+      gridmap[i][j] = 0;
+    }
+  } 
+}
+
+// Fruit represented by number 3
+void add_fruit_grid(){
+  gridmap[fruitX][fruitY] = 3;
+}
+
+// Head represented by 1 and tail by 2
+void add_snake_grid(){
+  gridmap[headX][headY] = 1;
+
+  for (int i = 0; i < tailLength; i++)
+  {
+    gridmap[tailX[i]][tailY[i]] = 2;
+  }
+}
+
+void draw_grid_to_screen(){
+  for (int i = 0; i < MAP_XWIDTH; i++)
+  {
+    for(int j = 0; j < MAP_YHEIGHT; j++){
+      switch (gridmap[i][j])
+      {
+      case 0:
+        draw_floor_tile(i, j);
+        break;
+      case 1:
+        draw_snake_head(i, j);
+        break;
+      case 2:
+        draw_snake_tail(i, j);
+        break;
+      case 3:
+        draw_fruit(i, j);
+        break;
+      default:
+        break;
+      }
+    }
+  } 
+}
+
+
+
 
 /* Below is the function that will be called when an interrupt is triggered. */
 void handle_interrupt(unsigned cause)
@@ -251,12 +313,11 @@ void handle_interrupt(unsigned cause)
       if(tailLength<MAP_XWIDTH*MAP_YHEIGHT)tailLength++;
     }
 
-    draw_stage();
-    draw_fruit();
-    draw_snake_tail();
-    draw_snake_head();
+    clear_grid();
+    add_fruit_grid();
+    add_snake_grid();
+    draw_grid_to_screen();
     draw_screen_to_fb();
-    
   }
 }
 
