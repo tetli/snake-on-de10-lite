@@ -39,7 +39,7 @@ static int gridmap[MAP_XWIDTH][MAP_YHEIGHT] = {0};
 #define OFFSET_X (SCREEN_WIDTH / 2)  // center horizontally
 #define OFFSET_Y 50 // distance from the top
 
- 
+/* "Random" seed */
 
 /* Directions */
 #define DIR_NONE  0
@@ -53,6 +53,8 @@ int gameover = 0;
 int headX, headY;
 int fruitX, fruitY;
 int score = 0;
+static int seed = 180081;
+
 
 int tailX[MAP_XWIDTH*MAP_YHEIGHT];
 int tailY[MAP_XWIDTH*MAP_YHEIGHT];
@@ -221,7 +223,12 @@ void move_snake(){
     else if (dir == DIR_RIGHT) headX++;
   
 }
-
+/* Psuedo random generator */
+int get_random(int limit){
+    seed = (16807 * (seed) + dir + headX + headY) % 2147483647;
+    int random = seed % limit;
+    return random;
+}
 
 int check_fruit_collision(){
   if (headX == fruitX && headY == fruitY) {
