@@ -7,6 +7,7 @@
 /* Below functions are external and found in other files. */
 
 #include "floorSprite.h"
+#include "cubeSprite.h"
 
 extern void enable_interrupt(void);
 
@@ -243,45 +244,6 @@ void check_snake_collision(){
     }
 }
 
-void draw_floor_tile(int gridX, int gridY) {
-    // Isometric calculation / tranformation off cordinates
-    int px = (gridX - gridY) * FLOOR_FRAME_WIDTH / 2 + OFFSET_X;
-    int py = (gridX + gridY) * FLOOR_FRAME_HEIGHT / 2 + OFFSET_Y;
-
-    for (int y = 0; y < FLOOR_FRAME_HEIGHT; y++) {
-        for (int x = 0; x < FLOOR_FRAME_WIDTH; x++) {
-            int color = floorTileSprite[y][x];
-            if (color != 0) {  // 0 = empty
-                int screenX = px + x;
-                int screenY = py + y;
-                if (screenX >= 0 && screenX < SCREEN_WIDTH &&
-                    screenY >= 0 && screenY < SCREEN_HEIGHT) {
-                    screen[screenX][screenY] = color;
-                }
-            }
-        }
-    }
-}
-
-void draw_snake_head(int gridX, int gridY) {
-    // Isometric calculation / tranformation off cordinates
-    int px = (gridX - gridY) * SNAKE_HEAD_FRAME_WIDTH / 2 + OFFSET_X;
-    int py = (gridX + gridY) * SNAKE_HEAD_FRAME_HEIGHT / 2 + OFFSET_Y - SNAKE_HEAD_FRAME_HEIGHT/2;
-
-    for (int y = 0; y < SNAKE_HEAD_FRAME_HEIGHT; y++) {
-        for (int x = 0; x < SNAKE_HEAD_FRAME_WIDTH; x++) {
-            int color = floorTileSprite[y][x];
-            if (color != 0) {  // 0 = empty
-                int screenX = px + x;
-                int screenY = py + y;
-                if (screenX >= 0 && screenX < SCREEN_WIDTH &&
-                    screenY >= 0 && screenY < SCREEN_HEIGHT) {
-                    screen[screenX][screenY] = color;
-                }
-            }
-        }
-    }
-}
 
 void clear_grid(){
   for (int i = 0; i < MAP_XWIDTH; i++)
@@ -307,13 +269,48 @@ void grid_add_snake(){
   }
 }
 
-// void draw_floor_tile(int x, int y){}
+void draw_floor_tile(int gridX, int gridY, int borderColor, int innerColor) {
+    // Isometric calculation / tranformation off cordinates
+    int px = (gridX - gridY) * FLOOR_FRAME_WIDTH / 2 + OFFSET_X;
+    int py = (gridX + gridY) * FLOOR_FRAME_HEIGHT / 2 + OFFSET_Y;
 
-// void draw_snake_head(int x, int y){}
+    for (int y = 0; y < FLOOR_FRAME_HEIGHT; y++) {
+        for (int x = 0; x < FLOOR_FRAME_WIDTH; x++) {
+            int colorSprite = floorTileSprite[y][x];
+            if (colorSprite != 0) {  // 0 = empty
+                int screenX = px + x;
+                int screenY = py + y;
+                if (screenX >= 0 && screenX < SCREEN_WIDTH &&
+                    screenY >= 0 && screenY < SCREEN_HEIGHT) {
+                    if (colorSprite == 1) screen[screenX][screenY] = borderColor;
+                    else if (colorSprite == 2) screen[screenX][screenY] = innerColor;
+                }
+            }
+        }
+    }
+}
 
-// void draw_snake_tail(int x, int y){}
+void draw_cube(int gridX, int gridY, int borderColor, int innerColor){
+  // Isometric calculation / tranformation off cordinates
+    int px = (gridX - gridY) * CUBE_FRAME_WIDTH / 2 + OFFSET_X;
+    int py = (gridX + gridY) * CUBE_FRAME_HEIGHT / 2 + OFFSET_Y - CUBE_FRAME_HEIGHT/2;
 
-// void draw_fruit(int x, int y){}
+    for (int y = 0; y < CUBE_FRAME_HEIGHT; y++) {
+        for (int x = 0; x < CUBE_FRAME_WIDTH; x++) {
+            int colorSprite = cubeSprite[y][x];
+            if (colorSprite != 0) {  // 0 = empty
+                int screenX = px + x;
+                int screenY = py + y;
+                if (screenX >= 0 && screenX < SCREEN_WIDTH &&
+                    screenY >= 0 && screenY < SCREEN_HEIGHT) {
+                    if (colorSprite == 1) screen[screenX][screenY] = borderColor;
+                    else if (colorSprite == 2) screen[screenX][screenY] = innerColor;
+                }
+            }
+        }
+    }
+}
+
 
 void draw_rect_to_screen(int x, int y, int color){
   int px = x * 20;
@@ -335,20 +332,20 @@ void draw_grid_to_screen(){
       switch (gridmap[i][j])
       {
       case 0:
-        //draw_floor_tile(i, j);
-        draw_rect_to_screen(i,j,0x49);
+        // Floor
+        draw_floor_tile(i, j, 0x00, 0x92);
         break;
       case 1:
-        //draw_snake_head(i, j);
-        draw_rect_to_screen(i,j,0x0C);
+        // Head
+        draw_cube(i, j, 0x0C, 0x10);
         break;
       case 2:
-        //draw_snake_tail(i, j);
-        draw_rect_to_screen(i,j,0x10);
+        // Tail
+        draw_cube(i, j, 0x0C, 0x14);
         break;
       case 3:
-        //draw_fruit(i, j);
-        draw_rect_to_screen(i,j,0xC0);
+        // Fruit
+        draw_cube(i, j, 0xA0, 0xC0);
         break;
       default:
         break;
