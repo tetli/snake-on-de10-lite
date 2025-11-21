@@ -12,7 +12,7 @@
 // 7 = green (dark)
 // 8 = red
 // 9 = white
-static const int snakeHeadSprite[FLOOR_FRAME_HEIGHT][FLOOR_FRAME_WIDTH] = {
+static const int snakeHeadSprite[SNAKE_HEAD_FRAME_HEIGHT][SNAKE_HEAD_FRAME_WIDTH] = {
     {0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,1,1,5,5,5,5,1,1,0,0,0,0,0,0},
     {0,0,0,0,1,1,5,5,5,5,5,5,5,5,1,1,0,0,0,0},

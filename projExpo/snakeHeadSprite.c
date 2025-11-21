@@ -1,6 +1,6 @@
 
-#define FLOoR_FRAME_WIDTH 20
-#define FLOOR_FRAME_HEIGHT 20
+#define SNAKE_HEAD_FRAME_WIDTH 20
+#define SNAKE_HEAD_FRAME_HEIGHT 20
 
 // 0 = empty, 1 = black, 5 = green (light), 6 = green (medium), 7 = green (dark), 8 = red, 9 = white
 const int snakeHeadSprite[20][20] = {
