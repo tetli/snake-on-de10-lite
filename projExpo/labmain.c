@@ -9,6 +9,7 @@
 #include "floorSprite.h"
 #include "snakeHeadSprite.h"
 
+extern void enable_interrupt(void);
 
 #define TIMER_BASE 0x04000020
 
@@ -261,12 +262,12 @@ void clear_grid(){
 }
 
 // Fruit represented by number 3
-void add_fruit_grid(){
+void grid_add_fruit(){
   gridmap[fruitX][fruitY] = 3;
 }
 
 // Head represented by 1 and tail by 2
-void add_snake_grid(){
+void grid_add_snake(){
   gridmap[headX][headY] = 1;
 
   for (int i = 0; i < tailLength; i++)
@@ -275,6 +276,25 @@ void add_snake_grid(){
   }
 }
 
+// void draw_floor_tile(int x, int y){}
+
+// void draw_snake_head(int x, int y){}
+
+// void draw_snake_tail(int x, int y){}
+
+// void draw_fruit(int x, int y){}
+
+void draw_rect_to_screen(int x, int y, int color){
+  for(int i=0; i < 20; i++)
+  {
+    for (int j = 0; j < 20; j++)
+    {
+      screen[x+i][y+j] = color;
+    }
+  }
+}
+
+
 void draw_grid_to_screen(){
   for (int i = 0; i < MAP_XWIDTH; i++)
   {
@@ -282,16 +302,20 @@ void draw_grid_to_screen(){
       switch (gridmap[i][j])
       {
       case 0:
-        draw_floor_tile(i, j);
+        //draw_floor_tile(i, j);
+        draw_rect_to_screen(i,j,0x49);
         break;
       case 1:
-        draw_snake_head(i, j);
+        //draw_snake_head(i, j);
+        draw_rect_to_screen(i,j,0x0C);
         break;
       case 2:
-        draw_snake_tail(i, j);
+        //draw_snake_tail(i, j);
+        draw_rect_to_screen(i,j,0x10);
         break;
       case 3:
-        draw_fruit(i, j);
+        //draw_fruit(i, j);
+        draw_rect_to_screen(i,j,0xC0);
         break;
       default:
         break;
@@ -321,8 +345,8 @@ void handle_interrupt(unsigned cause)
     }
 
     clear_grid();
-    add_fruit_grid();
-    add_snake_grid();
+    grid_add_fruit();
+    grid_add_snake_grid();
     draw_grid_to_screen();
     draw_screen_to_fb();
   }
