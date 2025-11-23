@@ -7,7 +7,6 @@
 /* Below functions are external and found in other files. */
 
 #include "floorSprite.h"
-#include "snakeHeadSprite.h"
 
 extern void enable_interrupt(void);
 
@@ -27,8 +26,9 @@ int timeoutcount = 0;
 volatile int previousTime = 0;
 volatile int hourCount = 0;
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
+#define FB_BASE 0x08000000
 
 static int screen[SCREEN_WIDTH][SCREEN_HEIGHT] = {0};
 
@@ -59,7 +59,7 @@ static int seed = 180081;
 
 int tailX[MAP_XWIDTH*MAP_YHEIGHT];
 int tailY[MAP_XWIDTH*MAP_YHEIGHT];
-int tailLength = 0;
+int tailLength = 1;
 
 int dir = DIR_RIGHT;
 
@@ -127,31 +127,6 @@ void update_display_time(int time, int hourC)
   set_displays(3, (time & 0xF000) >> 12);
   set_displays(4, hourC % 10);
   set_displays(5, hourC / 10);
-}
-
-void update_time(){
-  previousTime = mytime;
-  if (TIMER_STATUS & 0x1)
-  {
-    TIMER_STATUS = 0x0;
-    timeoutcount++;
-    timeoutcount %= 10;
-
-    if (timeoutcount == 0)
-    {
-      tick(&mytime); // Ticks the clock once
-      if (((previousTime & 0xFF00) != 0) && ((mytime & 0xFF00) == 0))
-      {
-        hourCount++;
-        if (hourCount >= 24)
-        {
-          hourCount = 0;
-        }
-      }
-      update_display_time(mytime, hourCount);
-    }
-    // Sätter timer status till 0. kan andänra hela värdet eftersom RUN biten ändras inte när den skrivs till.
-  }
 }
 
 int get_sw(void)
@@ -233,8 +208,6 @@ int get_random(int limit){
 
 int check_fruit_collision(){
   if (headX == fruitX && headY == fruitY) {
-        fruitX = get_random(MAP_XWIDTH);
-        fruitY = get_random(MAP_YHEIGHT);
         return 1;
   }
   return 0;
@@ -303,11 +276,13 @@ void grid_add_snake(){
 // void draw_fruit(int x, int y){}
 
 void draw_rect_to_screen(int x, int y, int color){
+  int px = x * 20;
+  int py = y * 20;
   for(int i=0; i < 20; i++)
   {
     for (int j = 0; j < 20; j++)
     {
-      screen[x+i][y+j] = color;
+      screen[px+i][py+j] = color;
     }
   }
 }
@@ -342,6 +317,27 @@ void draw_grid_to_screen(){
   } 
 }
 
+void draw_pixel(int x, int y, int color)
+{
+    if (x < 0 || x >= SCREEN_WIDTH) return;
+    if (y < 0 || y >= SCREEN_HEIGHT) return;
+
+    // framebuffer pointer
+    volatile unsigned char *fb = (volatile unsigned char *)FB_BASE;
+
+    fb[y * SCREEN_WIDTH + x] = (unsigned char)color; // unsigned char is 8bit, same as the display
+}
+void draw_screen_to_fb(){
+  for (int y = 0; y < SCREEN_HEIGHT; y++)
+  {
+    for (int x = 0; x < SCREEN_WIDTH; x++)
+    {
+      draw_pixel(x,y, screen[x][y]);
+    }
+  }
+}
+
+
 
 
 
@@ -349,7 +345,9 @@ void draw_grid_to_screen(){
 void handle_interrupt(unsigned cause)
 {
   if(cause == 16){
-    update_time();
+    TIMER_STATUS = 0x0;
+    timeoutcount++;
+    //update_time();
     int input = get_input();
     if (valid_dir(input)){
       dir = input;
@@ -393,11 +391,21 @@ void set_timer(int time){
 /* Initializing game and interrupts. */
 void gameinit(void)
 {
-  enable_interrupt();
+  headX = MAP_XWIDTH/2;
+  headY = MAP_YHEIGHT/2;
+  for(int i = 0; i<tailLength;i++){
+    tailX[i] = headX;
+    tailY[i] = headY;
+  }
+  
+  new_fruit_pos();
 
-  // sätt periodL och persiodH till 3 miljoner. mostvarar 100ms
-  set_timer(3000000);
+
+  // sätt periodL och persiodH till 1000ms
+  set_timer(1000);
   TIMER_CONTROL = 0b0111;
+
+  enable_interrupt();
 }
 
 
@@ -405,15 +413,4 @@ void gameinit(void)
 int main(void)
 {
   gameinit();
-
-  int count;
-  while (gameover == 0)
-  {
-    if(timeoutcount >= 10){
-      timeoutcount = 0;
-      count = (count + 1)%10;
-      set_displays(1, count);
-    }
-
-  }
 }
