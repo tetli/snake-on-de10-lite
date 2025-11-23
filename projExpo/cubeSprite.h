@@ -1,9 +1,14 @@
+#ifndef CUBE_SPRITE_H
+#define CUBE_SPRITE_H
 
-#define FLOoR_FRAME_WIDTH 20
-#define FLOOR_FRAME_HEIGHT 20
+#define CUBE_FRAME_WIDTH 20
+#define CUBE_FRAME_HEIGHT 20
 
-// 0 = empty, 1 = black, 5 = green (light), 6 = green (medium), 7 = green (dark), 8 = red, 9 = white
-const int snakeHeadSprite[20][20] = {
+// Färgkoder:
+// 0 = empty
+// 1 = border
+// 2 = inner
+static const int cubeSprite[CUBE_FRAME_HEIGHT][CUBE_FRAME_WIDTH] = {
     {0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,1,1,5,5,5,5,1,1,0,0,0,0,0,0},
     {0,0,0,0,1,1,5,5,5,5,5,5,5,5,1,1,0,0,0,0},
@@ -25,3 +30,5 @@ const int snakeHeadSprite[20][20] = {
     {0,0,0,0,0,0,1,1,6,1,1,7,1,1,0,0,0,8,0,0},
     {0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0}
 };
+
+#endif // CUBE_SPRITE_H
