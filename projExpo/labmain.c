@@ -226,9 +226,9 @@ void move_snake(){
 }
 /* Psuedo random generator */
 int get_random(int limit){
-    seed = (16807 * (seed) + dir + headX + headY) % 2147483647;
-    int random = seed % limit;
-    return random;
+  seed = (87 * (seed) + dir + headX + headY) % 83647;
+  int random = seed % limit;
+  return random;
 }
 
 int check_fruit_collision(){
@@ -236,8 +236,26 @@ int check_fruit_collision(){
         fruitX = get_random(MAP_XWIDTH);
         fruitY = get_random(MAP_YHEIGHT);
         return 1;
-    }
+  }
   return 0;
+}
+
+int valid_fruit_pos(){
+  if(fruitX == headX && fruitY == headY) return 0;
+  for(int i = 0; i < tailLength-1;i++){
+    if(fruitX == tailX[i] && fruitY == tailY[i]) return 0;
+  }
+  return 1;
+}
+
+void new_fruit_pos(){
+  if (MAP_XWIDTH*MAP_YHEIGHT == tailLength) gameover = 1;
+  fruitX = get_random(MAP_XWIDTH);
+  fruitY = get_random(MAP_YHEIGHT);
+  while(!valid_fruit_pos()){
+    fruitX = get_random(MAP_XWIDTH);
+    fruitY = get_random(MAP_YHEIGHT);
+  }
 }
 
 void check_snake_collision(){
@@ -339,24 +357,35 @@ void handle_interrupt(unsigned cause)
     move_snake();
 
     check_snake_collision();
+
     if (check_fruit_collision()){
+      new_fruit_pos();
       score++;
-      if(tailLength<MAP_XWIDTH*MAP_YHEIGHT)tailLength++;
+      // set_displays(0, score);
+      if(tailLength<MAP_XWIDTH*MAP_YHEIGHT){
+        tailLength++;
+        tailX[tailLength-1] = tailX[0];
+        tailY[tailLength-1] = tailY[0];
+      }
     }
 
-    clear_grid();
-    grid_add_fruit();
-    grid_add_snake_grid();
-    draw_grid_to_screen();
-    draw_screen_to_fb();
+    if (!gameover){
+      clear_grid();
+      grid_add_fruit();
+      grid_add_snake();
+      draw_grid_to_screen();
+      draw_screen_to_fb();
+    }
+    else
+      TIMER_CONTROL &= ~0x1;
   }
 }
 
 /* Set timer to input (milliseconds)*/
 void set_timer(int time){
-    time *= 30000; // Konvertera time till rätt format. 30MHz 
-    int timeLower = time%(1<<16);
-    int timeUpper = (time >>16)%(1<<16);
+    unsigned int time_val = (unsigned int)time * 30000U; // // Konvertera time till rätt format. 30MHz 
+    unsigned int timeLower = time_val & 0xFFFF;
+    unsigned int timeUpper = (time_val >> 16) & 0xFFFF;
     TIMER_PERIODL = timeLower;
     TIMER_PERIODH = timeUpper;
 }
