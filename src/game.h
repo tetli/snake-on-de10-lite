@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#define MAP_XWIDTH 12
+#define MAP_XWIDTH 16
 #define MAP_YHEIGHT 12
 
 /* Directions */
