@@ -9,7 +9,7 @@
  *
  * @param color The 16-bit color value to fill the screen with.
  */
-void fill(unsigned short color);
+void fill(unsigned char color);
 
 /**
  * Draws a rectangle on the screen.
@@ -20,6 +20,6 @@ void fill(unsigned short color);
  * @param h The height of the rectangle.
  * @param color The 16-bit color value to fill the rectangle with.
  */
-void draw_rect(int x, int y, int w, int h, unsigned short color);
+void draw_rect(int x, int y, int w, int h, unsigned char color);
 
 #endif // SCREEN_H
