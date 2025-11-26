@@ -1,15 +1,15 @@
-#define VGA_MEMORY_BASE 0x08000000
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
+#include "screen.h"
 
-volatile unsigned short *screen = (volatile unsigned short *)VGA_MEMORY_BASE;
+#define VGA_MEMORY_BASE 0x08000000
+
+volatile unsigned char *screen = (volatile unsigned char *)VGA_MEMORY_BASE;
 
 /**
  * Fills the entire screen with a specific color.
  *
- * @param color The 16-bit color value to fill the screen with.
+ * @param color The 8-bit color value to fill the screen with.
  */
-void fill(unsigned short color)
+void fill(unsigned char color)
 {
     for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
     {
@@ -24,9 +24,9 @@ void fill(unsigned short color)
  * @param y The y-coordinate of the top-left corner.
  * @param w The width of the rectangle.
  * @param h The height of the rectangle.
- * @param color The 16-bit color value to fill the rectangle with.
+ * @param color The 8-bit color value to fill the rectangle with.
  */
-void draw_rect(int x, int y, int w, int h, unsigned short color)
+void draw_rect(int x, int y, int w, int h, unsigned char color)
 {
     for (int row = y; row < y + h; row++)
     {
@@ -38,16 +38,4 @@ void draw_rect(int x, int y, int w, int h, unsigned short color)
             }
         }
     }
-}
-
-void handle_interrupt(void) {}
-
-int main(void)
-{
-    fill(0x0000);
-    draw_rect(0, 0, 10, 10, 0xFFFF);
-
-    while (1)
-        ;
-    return 0;
 }
