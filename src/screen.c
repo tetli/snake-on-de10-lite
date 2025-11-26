@@ -1,6 +1,6 @@
+#include "screen.h"
+
 #define VGA_MEMORY_BASE 0x08000000
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
 
 volatile unsigned short *screen = (volatile unsigned short *)VGA_MEMORY_BASE;
 
