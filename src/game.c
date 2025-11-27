@@ -243,7 +243,7 @@ void draw_grid_to_screen()
 
 void game_init(void)
 {
-    fill(0);
+    fill(0x00);
     headX = MAP_XWIDTH / 2;
     headY = MAP_YHEIGHT / 2;
     for (int i = 0; i < tailLength; i++)
