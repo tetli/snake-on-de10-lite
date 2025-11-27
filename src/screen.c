@@ -39,3 +39,50 @@ void draw_rect(int x, int y, int w, int h, unsigned char color)
         }
     }
 }
+
+void draw_pixel(int x, int y, int color)
+{
+    if (x < 0 || x >= SCREEN_WIDTH) return;
+    if (y < 0 || y >= SCREEN_HEIGHT) return;
+
+
+    screen[y * SCREEN_WIDTH + x] = (unsigned char)color; // unsigned char is 8bit, same as the display
+}
+
+void draw_tile(int x, int y, unsigned char borderColor, unsigned char innerColor){
+    for (int row = 0; row < FLOOR_FRAME_HEIGHT; row++) {
+        for (int col = 0; col < FLOOR_FRAME_WIDTH; col++) {
+
+            int colorType = floorTileSprite[row][col];
+            if (colorType == 0) continue; // 0 = empty
+
+            int screenX = x + col;
+            int screenY = y + row;
+
+            if (screenX >= 0 && screenX < SCREEN_WIDTH &&
+                screenY >= 0 && screenY < SCREEN_HEIGHT) {
+                if (colorType == 1) draw_pixel(screenX, screenY, borderColor);
+                else if (colorType == 2) draw_pixel(screenX, screenY, innerColor);
+            }
+        }
+    } 
+}
+
+void draw_cube(int x, int y, unsigned char borderColor, unsigned char innerColor){
+    for (int row = 0; row < CUBE_FRAME_HEIGHT; row++) {
+        for (int col = 0; col < CUBE_FRAME_WIDTH; col++) {
+
+            int colorType = cubeSprite[row][col];
+            if (colorType == 0) continue; // 0 = empty
+
+            int screenX = x + col;
+            int screenY = y + row;
+
+            if (screenX >= 0 && screenX < SCREEN_WIDTH &&
+                screenY >= 0 && screenY < SCREEN_HEIGHT) {
+                if (colorType == 1) draw_pixel(screenX, screenY, borderColor);
+                else if (colorType == 2) draw_pixel(screenX, screenY, innerColor);
+            }
+        }
+    }
+}
