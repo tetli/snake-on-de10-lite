@@ -279,7 +279,7 @@ void game_tick(void)
     }
 
     case STATE_GAMEOVER:
-        fill(0xF800); // Red background for Game Over
+        fill(0x01);
         if (get_input() == RESET_GAME)
         {
             game_init();
