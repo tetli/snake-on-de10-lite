@@ -1,6 +1,8 @@
 #include "game.h"
 #include "board.h"
 #include "screen.h"
+#include "floorSprite.h"
+#include "cubeSprite.h"
 
 static int gridmap[MAP_XWIDTH][MAP_YHEIGHT] = {0};
 
@@ -166,6 +168,22 @@ void grid_add_snake()
 void draw_rect_to_screen(int x, int y, int color)
 {
     draw_rect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE, (unsigned char)color);
+}
+ 
+void draw_tile_to_screen(int gridX, int gridY, int borderColor, int innerColor){
+    // Isometric calculation / tranformation off cordinates
+    int px = (gridX - gridY) * FLOOR_FRAME_WIDTH / 2 + OFFSET_X;
+    int py = (gridX + gridY) * FLOOR_FRAME_HEIGHT / 2 + OFFSET_Y;
+
+    draw_tile(px, py, borderColor, innerColor);
+}
+
+void draw_cube_to_screen(int gridX, int gridY, int borderColor, int innerColor){
+    // Isometric calculation / tranformation off cordinates
+    int px = (gridX - gridY) * FLOOR_FRAME_WIDTH / 2 + OFFSET_X;
+    int py = (gridX + gridY) * FLOOR_FRAME_HEIGHT / 2 + OFFSET_Y - CUBE_FRAME_HEIGHT/2;
+
+    draw_cube(px, py, borderColor, innerColor);
 }
 
 void draw_grid_to_screen()

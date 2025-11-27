@@ -5,6 +5,9 @@
 #define MAP_YHEIGHT 12
 #define GRID_SIZE 20
 
+#define OFFSET_X (SCREEN_WIDTH / 2)  // center horizontally
+#define OFFSET_Y 50 // distance from the top
+
 /* Directions */
 #define DIR_NONE 0
 #define DIR_UP 1
