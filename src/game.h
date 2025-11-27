@@ -1,9 +1,11 @@
 #ifndef GAME_H
 #define GAME_H
 
-#define MAP_XWIDTH 16
-#define MAP_YHEIGHT 12
-#define GRID_SIZE 20
+#include "screen.h"
+
+#define GRID_SIZE 10
+#define MAP_XWIDTH (SCREEN_WIDTH / GRID_SIZE)
+#define MAP_YHEIGHT (SCREEN_HEIGHT / GRID_SIZE)
 
 /* Directions */
 #define DIR_NONE 0
