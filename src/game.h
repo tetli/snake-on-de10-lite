@@ -3,6 +3,7 @@
 
 #define MAP_XWIDTH 16
 #define MAP_YHEIGHT 12
+#define GRID_SIZE 20
 
 /* Directions */
 #define DIR_NONE 0

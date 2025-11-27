@@ -165,7 +165,7 @@ void grid_add_snake()
 
 void draw_rect_to_screen(int x, int y, int color)
 {
-    draw_rect(x * 20, y * 20, 20, 20, (unsigned short)color);
+    draw_rect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE, (unsigned char)color);
 }
 
 void draw_grid_to_screen()
