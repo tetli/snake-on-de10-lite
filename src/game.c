@@ -5,6 +5,7 @@
 #include "cubeSprite.h"
 
 static int gridmap[MAP_XWIDTH][MAP_YHEIGHT] = {0};
+int previousDrawMode = 0;
 
 /* Game state */
 int gameover = 0;
@@ -187,7 +188,26 @@ void draw_cube_to_screen(int gridX, int gridY, int borderColor, int innerColor){
 }
 
 void draw_grid_to_screen()
-{
+{   
+    int isoDrawMode = get_sw() & 0b1000000000;
+
+    // clear screen from previous drawing method
+    if(isoDrawMode != previousDrawMode){
+        fill(0x00);
+        previousDrawMode = isoDrawMode;
+    } 
+        
+    // border walls
+    // replaces the need for a fill (more efficient)
+    // otherwise remenants form previous draws remain
+    if(isoDrawMode){
+        for (int i = -1; i < MAP_XWIDTH; i++){
+            for (int j = -1; j < MAP_YHEIGHT; j++){ 
+                if(i==-1 || j == -1) draw_cube_to_screen(i, j, 0x00, 0x49);
+            } 
+        }
+    } 
+    
     for (int i = 0; i < MAP_XWIDTH; i++)
     {
         for (int j = 0; j < MAP_YHEIGHT; j++)
@@ -196,19 +216,23 @@ void draw_grid_to_screen()
             {
             case 0:
                 // draw_floor_tile(i, j);
-                draw_rect_to_screen(i, j, 0x49);
+                if (isoDrawMode) draw_tile_to_screen(i, j, 0x00, 0x92);
+                else draw_rect_to_screen(i, j, 0x49);
                 break;
             case 1:
                 // draw_snake_head(i, j);
-                draw_rect_to_screen(i, j, 0x0C);
+                if (isoDrawMode) draw_cube_to_screen(i, j, 0x0C, 0x10);
+                else draw_rect_to_screen(i, j, 0x0C);
                 break;
             case 2:
                 // draw_snake_tail(i, j);
-                draw_rect_to_screen(i, j, 0x10);
+                if (isoDrawMode) draw_cube_to_screen(i, j, 0x0C, 0x14);
+                else draw_rect_to_screen(i, j, 0x10);
                 break;
             case 3:
                 // draw_fruit(i, j);
-                draw_rect_to_screen(i, j, 0xC0);
+                if (isoDrawMode) draw_cube_to_screen(i, j, 0xA0, 0xC0);
+                else draw_rect_to_screen(i, j, 0xC0);
                 break;
             default:
                 break;
