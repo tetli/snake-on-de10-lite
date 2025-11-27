@@ -246,11 +246,6 @@ void game_tick(void)
     }
     else
     {
-        // Stop timer? Or just stop updating?
-        // In original code: TIMER_CONTROL &= ~0x1;
-        // We need to access TIMER_CONTROL here or expose a function to stop timer.
-        // Or just do nothing.
-        // Let's expose a stop_timer function in board.h/c or just access it if we include board.h
         TIMER_CONTROL &= ~0x1;
     }
 }
