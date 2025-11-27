@@ -1,4 +1,6 @@
 #include "screen.h"
+#include "floorSprite.h"
+#include "cubeSprite.h"
 
 #define VGA_MEMORY_BASE 0x08000000
 
@@ -40,13 +42,13 @@ void draw_rect(int x, int y, int w, int h, unsigned char color)
     }
 }
 
-void draw_pixel(int x, int y, int color)
+void draw_pixel(int x, int y, unsigned char color)
 {
     if (x < 0 || x >= SCREEN_WIDTH) return;
     if (y < 0 || y >= SCREEN_HEIGHT) return;
 
 
-    screen[y * SCREEN_WIDTH + x] = (unsigned char)color; // unsigned char is 8bit, same as the display
+    screen[y * SCREEN_WIDTH + x] = color; // unsigned char is 8bit, same as the display
 }
 
 void draw_tile(int x, int y, unsigned char borderColor, unsigned char innerColor){
