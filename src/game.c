@@ -208,11 +208,22 @@ void draw_grid_to_screen()
 
 GameState gameState = STATE_START;
 
+void update_score_display()
+{
+    int temp_score = score;
+    for (int i = 0; i < 6; i++)
+    {
+        set_displays(i, temp_score % 10);
+        temp_score /= 10;
+    }
+}
+
 void game_init(void)
 {
     gameState = STATE_START;
     gameover = 0;
     score = 0;
+    update_score_display();
     tailLength = 1;
     dir = DIR_RIGHT;
 
@@ -256,6 +267,7 @@ void game_tick(void)
         {
             new_fruit_pos();
             score++;
+            update_score_display();
             // set_displays(0, score);
             if (tailLength < MAP_XWIDTH * MAP_YHEIGHT)
             {
