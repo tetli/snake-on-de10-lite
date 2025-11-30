@@ -2,7 +2,6 @@
 #include "board.h"
 #include "screen.h"
 #include "start.h"
-#include "napoleon.h"
 
 static int gridmap[MAP_XWIDTH][MAP_YHEIGHT] = {0};
 
