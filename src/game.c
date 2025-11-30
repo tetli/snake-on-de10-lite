@@ -2,6 +2,7 @@
 #include "board.h"
 #include "screen.h"
 #include "start.h"
+#include "end.h"
 
 static int gridmap[MAP_XWIDTH][MAP_YHEIGHT] = {0};
 
@@ -292,7 +293,7 @@ void game_tick(void)
     }
 
     case STATE_GAMEOVER:
-        fill(0x01);
+        draw_image(end);
         if (get_input() == RESET_GAME)
         {
             game_init();
