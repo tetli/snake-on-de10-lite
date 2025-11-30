@@ -1,6 +1,8 @@
 #include "game.h"
 #include "board.h"
 #include "screen.h"
+#include "start.h"
+#include "napoleon.h"
 
 static int gridmap[MAP_XWIDTH][MAP_YHEIGHT] = {0};
 
@@ -19,10 +21,16 @@ int dir = DIR_RIGHT;
 
 int get_input()
 {
-    int SwState = get_sw() & 0b1111;
+    int SwState = get_sw() & 0b111111;
     int dir = DIR_NONE;
     switch (SwState)
     {
+    case 0b100000:
+        dir = RESET_GAME;
+        break;
+    case 0b10000:
+        dir = START_GAME;
+        break;
     case 0b1000:
         dir = DIR_LEFT;
         break;
@@ -199,8 +207,16 @@ void draw_grid_to_screen()
     }
 }
 
+GameState gameState = STATE_START;
+
 void game_init(void)
 {
+    gameState = STATE_START;
+    gameover = 0;
+    score = 0;
+    tailLength = 1;
+    dir = DIR_RIGHT;
+
     fill(0);
     headX = MAP_XWIDTH / 2;
     headY = MAP_YHEIGHT / 2;
@@ -215,37 +231,61 @@ void game_init(void)
 
 void game_tick(void)
 {
-    int input = get_input();
-    if (valid_dir(input))
+    switch (gameState)
     {
-        dir = input;
-    }
-    move_snake();
-
-    check_snake_collision();
-
-    if (check_fruit_collision())
-    {
-        new_fruit_pos();
-        score++;
-        // set_displays(0, score);
-        if (tailLength < MAP_XWIDTH * MAP_YHEIGHT)
+    case STATE_START:
+        draw_image(start);
+        if (get_input() == START_GAME)
         {
-            tailLength++;
-            tailX[tailLength - 1] = tailX[0];
-            tailY[tailLength - 1] = tailY[0];
+            gameState = STATE_PLAYING;
+            fill(0);
         }
+        break;
+
+    case STATE_PLAYING:
+    {
+        int input = get_input();
+        if (valid_dir(input))
+        {
+            dir = input;
+        }
+        move_snake();
+
+        check_snake_collision();
+
+        if (check_fruit_collision())
+        {
+            new_fruit_pos();
+            score++;
+            // set_displays(0, score);
+            if (tailLength < MAP_XWIDTH * MAP_YHEIGHT)
+            {
+                tailLength++;
+                tailX[tailLength - 1] = tailX[0];
+                tailY[tailLength - 1] = tailY[0];
+            }
+        }
+
+        if (!gameover)
+        {
+            clear_grid();
+            grid_add_fruit();
+            grid_add_snake();
+            draw_grid_to_screen();
+        }
+        else
+        {
+            gameState = STATE_GAMEOVER;
+        }
+        break;
     }
 
-    if (!gameover)
-    {
-        clear_grid();
-        grid_add_fruit();
-        grid_add_snake();
-        draw_grid_to_screen();
-    }
-    else
-    {
-        TIMER_CONTROL &= ~0x1;
+    case STATE_GAMEOVER:
+        fill(0x01);
+        if (get_input() == RESET_GAME)
+        {
+            game_init();
+        }
+        break;
     }
 }
