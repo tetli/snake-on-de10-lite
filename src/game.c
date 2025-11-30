@@ -1,6 +1,8 @@
 #include "game.h"
 #include "board.h"
 #include "screen.h"
+#include "start.h"
+#include "napoleon.h"
 
 static int gridmap[MAP_XWIDTH][MAP_YHEIGHT] = {0};
 
@@ -232,7 +234,7 @@ void game_tick(void)
     switch (gameState)
     {
     case STATE_START:
-        fill(0xFF);
+        draw_image(start);
         if (get_input() == START_GAME)
         {
             gameState = STATE_PLAYING;

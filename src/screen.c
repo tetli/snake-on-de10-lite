@@ -39,3 +39,16 @@ void draw_rect(int x, int y, int w, int h, unsigned char color)
         }
     }
 }
+
+/**
+ * Draws a full screen image.
+ *
+ * @param image_data Pointer to the image data array.
+ */
+void draw_image(const unsigned char *image_data)
+{
+    for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
+    {
+        *(screen + i) = image_data[i];
+    }
+}
