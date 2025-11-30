@@ -207,6 +207,14 @@ void draw_grid_to_screen()
     }
 }
 
+void draw_game_frame()
+{
+    clear_grid();
+    grid_add_fruit();
+    grid_add_snake();
+    draw_grid_to_screen();
+}
+
 GameState gameState = STATE_START;
 
 void update_score_display()
@@ -238,6 +246,7 @@ void game_init(void)
     }
 
     new_fruit_pos();
+    draw_image(start);
 }
 
 void game_tick(void)
@@ -250,6 +259,7 @@ void game_tick(void)
         {
             gameState = STATE_PLAYING;
             fill(0);
+            draw_game_frame();
         }
         break;
 
@@ -280,14 +290,12 @@ void game_tick(void)
 
         if (!gameover)
         {
-            clear_grid();
-            grid_add_fruit();
-            grid_add_snake();
-            draw_grid_to_screen();
+            draw_game_frame();
         }
         else
         {
             gameState = STATE_GAMEOVER;
+            draw_image(end);
         }
         break;
     }
