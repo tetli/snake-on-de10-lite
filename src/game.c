@@ -185,8 +185,14 @@ void draw_grid_to_screen()
             switch (gridmap[i][j])
             {
             case 0:
-                // draw_floor_tile(i, j);
-                draw_rect_to_screen(i, j, 0x49);
+                if ((i + j) % 2 == 0)
+                {
+                    draw_rect_to_screen(i, j, 0x9A);
+                }
+                else
+                {
+                    draw_rect_to_screen(i, j, 0x76);
+                }
                 break;
             case 1:
                 // draw_snake_head(i, j);
