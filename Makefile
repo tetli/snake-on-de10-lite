@@ -4,7 +4,7 @@ SYSTEM_DIR := system
 SPRITES_DIR := sprites
 
 # Toolchain and flags
-TOOLCHAIN ?= riscv64-unknown-elf-
+TOOLCHAIN ?= riscv32-unknown-elf-
 CC := $(TOOLCHAIN)gcc
 LD := $(TOOLCHAIN)ld
 OBJCOPY := $(TOOLCHAIN)objcopy
