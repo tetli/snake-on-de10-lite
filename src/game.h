@@ -1,11 +1,12 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "screen.h"
+#define MAP_XWIDTH 12
+#define MAP_YHEIGHT 12
+#define GRID_SIZE 20
 
-#define GRID_SIZE 10
-#define MAP_XWIDTH (SCREEN_WIDTH / GRID_SIZE)
-#define MAP_YHEIGHT (SCREEN_HEIGHT / GRID_SIZE)
+#define OFFSET_X (SCREEN_WIDTH / 2) - 10 // center horizontally
+#define OFFSET_Y 60                      // distance from the top
 
 /* Directions */
 #define DIR_NONE 0

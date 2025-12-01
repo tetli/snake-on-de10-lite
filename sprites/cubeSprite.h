@@ -8,6 +8,6 @@
 // 0 = empty
 // 1 = border
 // 2 = inner
-static const int cubeSprite[CUBE_FRAME_HEIGHT][CUBE_FRAME_WIDTH];
+extern const int cubeSprite[CUBE_FRAME_HEIGHT][CUBE_FRAME_WIDTH];
 
 #endif // CUBE_SPRITE_H

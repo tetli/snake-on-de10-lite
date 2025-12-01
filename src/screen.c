@@ -1,4 +1,6 @@
 #include "screen.h"
+#include "floorSprite.h"
+#include "cubeSprite.h"
 
 #define VGA_MEMORY_BASE 0x08000000
 
@@ -50,5 +52,67 @@ void draw_image(const unsigned char *image_data)
     for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
     {
         *(screen + i) = image_data[i];
+    }
+}
+
+void draw_pixel(int x, int y, unsigned char color)
+{
+    if (x < 0 || x >= SCREEN_WIDTH)
+        return;
+    if (y < 0 || y >= SCREEN_HEIGHT)
+        return;
+
+    screen[y * SCREEN_WIDTH + x] = color; // unsigned char is 8bit, same as the display
+}
+
+void draw_tile(int x, int y, unsigned char borderColor, unsigned char innerColor)
+{
+    for (int row = 0; row < FLOOR_FRAME_HEIGHT; row++)
+    {
+        for (int col = 0; col < FLOOR_FRAME_WIDTH; col++)
+        {
+
+            int colorType = floorTileSprite[row][col];
+            if (colorType == 0)
+                continue; // 0 = empty
+
+            int screenX = x + col;
+            int screenY = y + row;
+
+            if (screenX >= 0 && screenX < SCREEN_WIDTH &&
+                screenY >= 0 && screenY < SCREEN_HEIGHT)
+            {
+                if (colorType == 1)
+                    draw_pixel(screenX, screenY, borderColor);
+                else if (colorType == 2)
+                    draw_pixel(screenX, screenY, innerColor);
+            }
+        }
+    }
+}
+
+void draw_cube(int x, int y, unsigned char borderColor, unsigned char innerColor)
+{
+    for (int row = 0; row < CUBE_FRAME_HEIGHT; row++)
+    {
+        for (int col = 0; col < CUBE_FRAME_WIDTH; col++)
+        {
+
+            int colorType = cubeSprite[row][col];
+            if (colorType == 0)
+                continue; // 0 = empty
+
+            int screenX = x + col;
+            int screenY = y + row;
+
+            if (screenX >= 0 && screenX < SCREEN_WIDTH &&
+                screenY >= 0 && screenY < SCREEN_HEIGHT)
+            {
+                if (colorType == 1)
+                    draw_pixel(screenX, screenY, borderColor);
+                else if (colorType == 2)
+                    draw_pixel(screenX, screenY, innerColor);
+            }
+        }
     }
 }
