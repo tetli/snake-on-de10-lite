@@ -8,6 +8,7 @@
 
 static int gridmap[MAP_XWIDTH][MAP_YHEIGHT] = {0};
 int previousDrawMode = 0;
+int isoDrawMode = 0;
 
 /* Game state */
 int gameover = 0;
@@ -24,10 +25,14 @@ int dir = DIR_RIGHT;
 
 int get_input()
 {
-    int SwState = get_sw() & 0b111111;
+    int SwState = get_sw() & 0b1000111111;
     int dir = DIR_NONE;
+    isoDrawMode = 0;
     switch (SwState)
     {
+    case 0b1000000000:
+        isoDrawMode = 1;
+        break;
     case 0b100000:
         dir = RESET_GAME;
         break;
@@ -199,8 +204,6 @@ void draw_cube_to_screen(int gridX, int gridY, int borderColor, int innerColor)
 
 void draw_grid_to_screen()
 {
-    int isoDrawMode = get_sw() & 0b1000000000;
-
     // clear screen from previous drawing method
     if (isoDrawMode != previousDrawMode)
     {
