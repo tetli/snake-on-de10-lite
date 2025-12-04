@@ -25,20 +25,12 @@ int dir = DIR_RIGHT;
 
 int get_input()
 {
-    int SwState = get_sw() & 0b1000111111;
+    int SwState = get_sw();
     int dir = DIR_NONE;
-    isoDrawMode = 0;
-    switch (SwState)
+
+    // Set direction based on switch input
+    switch (SwState & 0b1111)
     {
-    case 0b1000000000:
-        isoDrawMode = 1;
-        break;
-    case 0b100000:
-        dir = RESET_GAME;
-        break;
-    case 0b10000:
-        dir = START_GAME;
-        break;
     case 0b1000:
         dir = DIR_LEFT;
         break;
@@ -55,6 +47,34 @@ int get_input()
         break;
     }
     return dir;
+}
+
+// Separate function to only get state related input
+int get_state_input(){
+    int SwState = get_sw();
+    int input = DIR_NONE;
+    // Set draw mode based on switch input
+    if(SwState & 0b1000000000)isoDrawMode = 1;
+    else isoDrawMode = 0;
+
+    // Check for start/reset
+    switch (SwState & 0b110000)
+    {
+    case 0b010000:
+        input = START_GAME;
+        break;
+    case 0b100000:
+        input = RESET_GAME;
+        break;
+    default:
+        break;
+    }
+
+
+    
+
+    return input;
+    
 }
 
 int valid_dir(int input)
@@ -299,6 +319,7 @@ void game_init(void)
     fill(0x00);
     headX = MAP_XWIDTH / 2;
     headY = MAP_YHEIGHT / 2;
+    // Initialize tail positions to prevent drawing issues
     for (int i = 0; i < tailLength; i++)
     {
         tailX[i] = headX;
@@ -315,10 +336,10 @@ void game_tick(void)
     {
     case STATE_START:
         draw_image(start);
-        if (get_input() == START_GAME)
+        if (get_state_input() == START_GAME)
         {
             gameState = STATE_PLAYING;
-            fill(0);
+            fill(0x00);
             draw_game_frame();
         }
         break;
@@ -326,6 +347,7 @@ void game_tick(void)
     case STATE_PLAYING:
     {
         int input = get_input();
+        get_state_input(); // to update isoDrawMode even during gameplay
         if (valid_dir(input))
         {
             dir = input;
@@ -362,7 +384,7 @@ void game_tick(void)
 
     case STATE_GAMEOVER:
         draw_image(end);
-        if (get_input() == RESET_GAME)
+        if (get_state_input() == RESET_GAME)
         {
             game_init();
         }
