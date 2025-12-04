@@ -5,7 +5,7 @@
 #include "end.h"
 #include "floorSprite.h"
 #include "cubeSprite.h"
-
+/* Game variables */
 static int gridmap[MAP_XWIDTH][MAP_YHEIGHT] = {0};
 int previousDrawMode = 0;
 int isoDrawMode = 0;
@@ -19,10 +19,12 @@ static int seed = 180081;
 
 int tailX[MAP_XWIDTH * MAP_YHEIGHT];
 int tailY[MAP_XWIDTH * MAP_YHEIGHT];
-int tailLength = 1;
+int tailLength = 2;
 
 int dir = DIR_RIGHT;
+GameState gameState = STATE_START;
 
+// Get input from switches (4 LSB for direction) and return corresponding direction
 int get_input()
 {
     int SwState = get_sw();
@@ -53,6 +55,7 @@ int get_input()
 int get_state_input(){
     int SwState = get_sw();
     int input = DIR_NONE;
+
     // Set draw mode based on switch input
     if(SwState & 0b1000000000)isoDrawMode = 1;
     else isoDrawMode = 0;
@@ -69,14 +72,10 @@ int get_state_input(){
     default:
         break;
     }
-
-
-    
-
     return input;
-    
 }
 
+// Validate direction change (to prevent 180-degree reversals)
 int valid_dir(int input)
 {
     if (input == DIR_UP || input == DIR_DOWN || input == DIR_LEFT || input == DIR_RIGHT)
@@ -93,6 +92,7 @@ int valid_dir(int input)
     return 0;
 }
 
+// Move the snake based on the current direction and update tail positions
 void move_snake()
 {
     // Move tail
@@ -123,6 +123,7 @@ int get_random(int limit)
     return random;
 }
 
+// Check if the snake's head has collided with the fruit
 int check_fruit_collision()
 {
     if (headX == fruitX && headY == fruitY)
@@ -132,6 +133,7 @@ int check_fruit_collision()
     return 0;
 }
 
+// Validate that the new fruit position does not overlap with the snake
 int valid_fruit_pos()
 {
     if (fruitX == headX && fruitY == headY)
@@ -144,10 +146,13 @@ int valid_fruit_pos()
     return 1;
 }
 
+// Generate a new valid position for the fruit
 void new_fruit_pos()
 {
+    // If the snake fills the entire grid, set gameover
     if (MAP_XWIDTH * MAP_YHEIGHT == tailLength)
         gameover = 1;
+    
     fruitX = get_random(MAP_XWIDTH);
     fruitY = get_random(MAP_YHEIGHT);
     while (!valid_fruit_pos())
@@ -157,6 +162,7 @@ void new_fruit_pos()
     }
 }
 
+// Check for collisions with walls or the snake's own tail
 void check_snake_collision()
 {
     // Check head into walls
@@ -171,6 +177,7 @@ void check_snake_collision()
     }
 }
 
+// Clear the grid map
 void clear_grid()
 {
     for (int i = 0; i < MAP_XWIDTH; i++)
@@ -182,28 +189,32 @@ void clear_grid()
     }
 }
 
+// Add fruit to the grid map
 // Fruit represented by number 3
 void grid_add_fruit()
 {
     gridmap[fruitX][fruitY] = 3;
 }
 
+// Add snake to the grid map
 // Head represented by 1 and tail by 2
 void grid_add_snake()
 {
-    gridmap[headX][headY] = 1;
-
     for (int i = 0; i < tailLength; i++)
     {
         gridmap[tailX[i]][tailY[i]] = 2;
     }
+    gridmap[headX][headY] = 1;
 }
 
+/* Drawing functions */
+// Draw rectangle at grid position
 void draw_rect_to_screen(int x, int y, int color)
 {
     draw_rect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE, (unsigned char)color);
 }
 
+// Draw isometric tile at grid position
 void draw_tile_to_screen(int gridX, int gridY, int borderColor, int innerColor)
 {
     // Isometric calculation / tranformation off cordinates
@@ -213,6 +224,7 @@ void draw_tile_to_screen(int gridX, int gridY, int borderColor, int innerColor)
     draw_tile(px, py, borderColor, innerColor);
 }
 
+// Draw isometric cube at grid position
 void draw_cube_to_screen(int gridX, int gridY, int borderColor, int innerColor)
 {
     // Isometric calculation / tranformation off cordinates
@@ -222,6 +234,7 @@ void draw_cube_to_screen(int gridX, int gridY, int borderColor, int innerColor)
     draw_cube(px, py, borderColor, innerColor);
 }
 
+// Draw the entire grid to the screen based on the current grid map
 void draw_grid_to_screen()
 {
     // clear screen from previous drawing method
@@ -231,7 +244,7 @@ void draw_grid_to_screen()
         previousDrawMode = isoDrawMode;
     }
 
-    // border walls
+    // Draw border cube walls
     // replaces the need for a fill (more efficient)
     // otherwise remenants form previous draws remain
     if (isoDrawMode)
@@ -246,6 +259,7 @@ void draw_grid_to_screen()
         }
     }
 
+    // Draw grid elements
     for (int i = 0; i < MAP_XWIDTH; i++)
     {
         for (int j = 0; j < MAP_YHEIGHT; j++)
@@ -287,6 +301,7 @@ void draw_grid_to_screen()
     }
 }
 
+// Draw the entire game frame
 void draw_game_frame()
 {
     clear_grid();
@@ -295,8 +310,7 @@ void draw_game_frame()
     draw_grid_to_screen();
 }
 
-GameState gameState = STATE_START;
-
+// Update the score display on the 7-segment displays
 void update_score_display()
 {
     int temp_score = score;
@@ -307,6 +321,7 @@ void update_score_display()
     }
 }
 
+// Initialize the game upon start or reset
 void game_init(void)
 {
 
@@ -314,7 +329,7 @@ void game_init(void)
     gameover = 0;
     score = 0;
     update_score_display();
-    tailLength = 1;
+    tailLength = 2;
     dir = DIR_RIGHT;
     fill(0x00);
     headX = MAP_XWIDTH / 2;
@@ -330,11 +345,12 @@ void game_init(void)
     draw_image(start);
 }
 
+// Main game tick function to handle game state updates and game logic
 void game_tick(void)
 {
     switch (gameState)
     {
-    case STATE_START:
+    case STATE_START: // Show start screen and wait for input to start the game
         draw_image(start);
         if (get_state_input() == START_GAME)
         {
@@ -344,7 +360,7 @@ void game_tick(void)
         }
         break;
 
-    case STATE_PLAYING:
+    case STATE_PLAYING: // Main gameplay logic
     {
         int input = get_input();
         get_state_input(); // to update isoDrawMode even during gameplay
@@ -361,7 +377,7 @@ void game_tick(void)
             new_fruit_pos();
             score++;
             update_score_display();
-            // set_displays(0, score);
+            // Increase tail length
             if (tailLength < MAP_XWIDTH * MAP_YHEIGHT)
             {
                 tailLength++;
@@ -382,7 +398,7 @@ void game_tick(void)
         break;
     }
 
-    case STATE_GAMEOVER:
+    case STATE_GAMEOVER: // Show game over screen and wait for reset input
         draw_image(end);
         if (get_state_input() == RESET_GAME)
         {
