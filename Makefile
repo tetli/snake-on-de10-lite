@@ -1,6 +1,4 @@
-/*
-    Modified 2025 by Albin Tetli and Carl Malm
-*/
+# Modified 2025 by Albin Tetli and Carl Malm
 
 BUILD_DIR := build
 SRC_DIR := src
