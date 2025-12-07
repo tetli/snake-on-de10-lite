@@ -107,20 +107,20 @@ int main(void)
   unsigned int end_hpm8 = get_hpm_counter(8);
   unsigned int end_hpm9 = get_hpm_counter(9);
 
-  unsigned int total_cycles = end_cycles - start_cycles;
-  unsigned int total_instret = end_instret - start_instret;
-  unsigned int total_hpm3 = end_hpm3 - start_hpm3;
-  unsigned int total_hpm4 = end_hpm4 - start_hpm4;
-  unsigned int total_hpm5 = end_hpm5 - start_hpm5;
-  unsigned int total_hpm6 = end_hpm6 - start_hpm6;
-  unsigned int total_hpm7 = end_hpm7 - start_hpm7;
-  unsigned int total_hpm8 = end_hpm8 - start_hpm8;
-  unsigned int total_hpm9 = end_hpm9 - start_hpm9;
+  unsigned int total_cycles = (end_cycles - start_cycles) / 1000;
+  unsigned int total_instret = (end_instret - start_instret) / 1000;
+  unsigned int total_hpm3 = (end_hpm3 - start_hpm3) / 1000;
+  unsigned int total_hpm4 = (end_hpm4 - start_hpm4) / 1000;
+  unsigned int total_hpm5 = (end_hpm5 - start_hpm5) / 1000;
+  unsigned int total_hpm6 = (end_hpm6 - start_hpm6) / 1000;
+  unsigned int total_hpm7 = (end_hpm7 - start_hpm7) / 1000;
+  unsigned int total_hpm8 = (end_hpm8 - start_hpm8) / 1000;
+  unsigned int total_hpm9 = (end_hpm9 - start_hpm9) / 1000;
 
-  print("Total Cycles: ");
+  print("Average Cycles per Tick: ");
   print_dec(total_cycles);
   print("\n");
-  print("Total Instructions: ");
+  print("Average Instructions per Tick: ");
   print_dec(total_instret);
   print("\n");
   print("IPC: ");
@@ -140,32 +140,121 @@ int main(void)
   }
   print("\n");
 
-  print("Memory Instructions (hpm3): ");
+  print("Memory Instructions (hpm3) per Tick: ");
   print_dec(total_hpm3);
   print("\n");
 
-  print("I-Cache Misses (hpm4): ");
+  print("I-Cache Misses (hpm4) per Tick: ");
   print_dec(total_hpm4);
   print("\n");
 
-  print("D-Cache Misses (hpm5): ");
+  print("D-Cache Misses (hpm5) per Tick: ");
   print_dec(total_hpm5);
   print("\n");
 
-  print("I-Cache Stalls (hpm6): ");
+  print("I-Cache Stalls (hpm6) per Tick: ");
   print_dec(total_hpm6);
   print("\n");
 
-  print("D-Cache Stalls (hpm7): ");
+  print("D-Cache Stalls (hpm7) per Tick: ");
   print_dec(total_hpm7);
   print("\n");
 
-  print("Data Hazard Stalls (hpm8): ");
+  print("Data Hazard Stalls (hpm8) per Tick: ");
   print_dec(total_hpm8);
   print("\n");
 
-  print("ALU Stalls (hpm9): ");
+  print("ALU Stalls (hpm9) per Tick: ");
   print_dec(total_hpm9);
+  print("\n");
+
+  // Rendering Benchmark
+  print("\nStarting Rendering Analysis...\n");
+  unsigned int start_render_cycles = get_cycles();
+  unsigned int start_render_instret = get_instret();
+  unsigned int start_render_hpm3 = get_hpm_counter(3);
+  unsigned int start_render_hpm4 = get_hpm_counter(4);
+  unsigned int start_render_hpm5 = get_hpm_counter(5);
+  unsigned int start_render_hpm6 = get_hpm_counter(6);
+  unsigned int start_render_hpm7 = get_hpm_counter(7);
+  unsigned int start_render_hpm8 = get_hpm_counter(8);
+  unsigned int start_render_hpm9 = get_hpm_counter(9);
+
+  for (int i = 0; i < 10; i++)
+  {
+    draw_game_frame();
+  }
+
+  unsigned int end_render_cycles = get_cycles();
+  unsigned int end_render_instret = get_instret();
+  unsigned int end_render_hpm3 = get_hpm_counter(3);
+  unsigned int end_render_hpm4 = get_hpm_counter(4);
+  unsigned int end_render_hpm5 = get_hpm_counter(5);
+  unsigned int end_render_hpm6 = get_hpm_counter(6);
+  unsigned int end_render_hpm7 = get_hpm_counter(7);
+  unsigned int end_render_hpm8 = get_hpm_counter(8);
+  unsigned int end_render_hpm9 = get_hpm_counter(9);
+
+  unsigned int total_render_cycles = (end_render_cycles - start_render_cycles) / 10;
+  unsigned int total_render_instret = (end_render_instret - start_render_instret) / 10;
+  unsigned int total_render_hpm3 = (end_render_hpm3 - start_render_hpm3) / 10;
+  unsigned int total_render_hpm4 = (end_render_hpm4 - start_render_hpm4) / 10;
+  unsigned int total_render_hpm5 = (end_render_hpm5 - start_render_hpm5) / 10;
+  unsigned int total_render_hpm6 = (end_render_hpm6 - start_render_hpm6) / 10;
+  unsigned int total_render_hpm7 = (end_render_hpm7 - start_render_hpm7) / 10;
+  unsigned int total_render_hpm8 = (end_render_hpm8 - start_render_hpm8) / 10;
+  unsigned int total_render_hpm9 = (end_render_hpm9 - start_render_hpm9) / 10;
+
+  print("Average Rendering Cycles per Frame: ");
+  print_dec(total_render_cycles);
+  print("\n");
+
+  print("Average Instructions per Frame: ");
+  print_dec(total_render_instret);
+  print("\n");
+  print("IPC: ");
+  if (total_render_cycles > 0)
+  {
+    unsigned int ipc_int = total_render_instret / total_render_cycles;
+    unsigned int ipc_frac = ((total_render_instret % total_render_cycles) * 100) / total_render_cycles;
+    print_dec(ipc_int);
+    print(".");
+    if (ipc_frac < 10)
+      print("0");
+    print_dec(ipc_frac);
+  }
+  else
+  {
+    print("N/A");
+  }
+  print("\n");
+
+  print("Memory Instructions (hpm3) per Frame: ");
+  print_dec(total_render_hpm3);
+  print("\n");
+
+  print("I-Cache Misses (hpm4) per Frame: ");
+  print_dec(total_render_hpm4);
+  print("\n");
+
+  print("D-Cache Misses (hpm5) per Frame: ");
+  print_dec(total_render_hpm5);
+  print("\n");
+
+  print("I-Cache Stalls (hpm6) per Frame: ");
+  print_dec(total_render_hpm6);
+  print("\n");
+
+  print("D-Cache Stalls (hpm7) per Frame: ");
+  print_dec(total_render_hpm7);
+  print("\n");
+
+  print("Data Hazard Stalls (hpm8) per Frame: ");
+  print_dec(total_render_hpm8);
+  print("\n");
+
+  print("ALU Stalls (hpm9) per Frame: ");
+  print_dec(total_render_hpm9);
   print("\n");
 
   // Re-initialize game for normal play
