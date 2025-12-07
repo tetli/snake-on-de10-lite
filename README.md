@@ -4,7 +4,7 @@ A classic Snake game implementation for the DE10-Lite FPGA board, running on a R
 
 ## Overview
 
-This project implements the Snake game using C and Assembly. It is designed to run on a bare-metal RISC-V environment (specifically targeting a soft-core on the DE10-Lite). The game features graphical output, interrupt-driven game logic, and hardware control via memory-mapped I/O.
+This project implements the Snake game using C and Assembly. The game features graphical output, interrupt-driven game logic, and hardware control via memory-mapped I/O.
 
 ## Features
 
@@ -46,8 +46,6 @@ To build this project, you need a RISC-V toolchain installed:
    - `main.elf.txt`: Disassembly for debugging.
 
 ## Controls
-
-(Note: Specific mappings depend on `board.c` implementation)
 
 - **Movement**: Onboard Buttons / Switches.
 - **Reset/Start**: Specific button or switch combination.

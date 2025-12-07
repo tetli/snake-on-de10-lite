@@ -1,3 +1,7 @@
+/*
+    Written 2025 by Albin Tetli and Carl Malm
+*/
+
 #include "screen.h"
 #include "floorSprite.h"
 #include "cubeSprite.h"

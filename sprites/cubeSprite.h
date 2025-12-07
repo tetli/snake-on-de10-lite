@@ -1,3 +1,7 @@
+/*
+    Written 2025 by Carl Malm
+*/
+
 #ifndef CUBE_SPRITE_H
 #define CUBE_SPRITE_H
 

@@ -1,3 +1,7 @@
+/*
+    Written 2025 by Carl Malm
+*/
+
 #ifndef FLOORTILESPRITE_H
 #define FLOORTILESPRITE_H
 
@@ -8,4 +12,3 @@
 extern const int floorTileSprite[FLOOR_FRAME_HEIGHT][FLOOR_FRAME_WIDTH];
 
 #endif // FLOORTILESPRITE_H
-

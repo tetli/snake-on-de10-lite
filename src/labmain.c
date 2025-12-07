@@ -1,10 +1,6 @@
-/* main.c
-
-   This file written 2024 by Artur Podobas and Pedro Antunes
-
-   For copyright and licensing, see file COPYING */
-
-/* Below functions are external and found in other files. */
+/*
+    Written 2025 by Albin Tetli and Carl Malm
+*/
 
 #include "board.h"
 #include "game.h"
@@ -16,7 +12,6 @@ int timeoutcount = 0;
 volatile int previousTime = 0;
 volatile int hourCount = 0;
 
-/* Below is the function that will be called when an interrupt is triggered. */
 void handle_interrupt(unsigned cause)
 {
   if (cause == 16)

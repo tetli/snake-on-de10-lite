@@ -1,3 +1,7 @@
+/*
+    Written 2025 by Albin Tetli and Carl Malm
+*/
+
 #ifndef GAME_H
 #define GAME_H
 

@@ -125,6 +125,8 @@ _start:
 	jal main
 	
 
+
+/* Modified by Albin Tetli and Carl Malm*/
 enable_interrupt:
 	// pekar mtvec på ISR-handler
 	la t0, _isr_handler

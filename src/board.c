@@ -1,3 +1,7 @@
+/*
+    Written 2025 by Albin Tetli and Carl Malm
+*/
+
 #include "board.h"
 
 void set_leds(int led_mask)

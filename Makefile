@@ -1,3 +1,7 @@
+/*
+    Modified 2025 by Albin Tetli and Carl Malm
+*/
+
 BUILD_DIR := build
 SRC_DIR := src
 SYSTEM_DIR := system

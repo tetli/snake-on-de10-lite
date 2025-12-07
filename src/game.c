@@ -1,3 +1,7 @@
+/*
+    Written 2025 by Albin Tetli and Carl Malm
+*/
+
 #include "game.h"
 #include "board.h"
 #include "screen.h"
@@ -52,13 +56,16 @@ int get_input()
 }
 
 // Separate function to only get state related input
-int get_state_input(){
+int get_state_input()
+{
     int SwState = get_sw();
     int input = DIR_NONE;
 
     // Set draw mode based on switch input
-    if(SwState & 0b1000000000)isoDrawMode = 1;
-    else isoDrawMode = 0;
+    if (SwState & 0b1000000000)
+        isoDrawMode = 1;
+    else
+        isoDrawMode = 0;
 
     // Check for start/reset
     switch (SwState & 0b110000)
@@ -152,7 +159,7 @@ void new_fruit_pos()
     // If the snake fills the entire grid, set gameover
     if (MAP_XWIDTH * MAP_YHEIGHT == tailLength)
         gameover = 1;
-    
+
     fruitX = get_random(MAP_XWIDTH);
     fruitY = get_random(MAP_YHEIGHT);
     while (!valid_fruit_pos())
