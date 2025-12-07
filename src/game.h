@@ -26,6 +26,7 @@ typedef enum
 
 void game_init(void);
 void game_tick(void);
+void update_game_logic_only(void);
 int get_input(void);
 
 #endif

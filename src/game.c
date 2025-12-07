@@ -52,13 +52,16 @@ int get_input()
 }
 
 // Separate function to only get state related input
-int get_state_input(){
+int get_state_input()
+{
     int SwState = get_sw();
     int input = DIR_NONE;
 
     // Set draw mode based on switch input
-    if(SwState & 0b1000000000)isoDrawMode = 1;
-    else isoDrawMode = 0;
+    if (SwState & 0b1000000000)
+        isoDrawMode = 1;
+    else
+        isoDrawMode = 0;
 
     // Check for start/reset
     switch (SwState & 0b110000)
@@ -152,7 +155,7 @@ void new_fruit_pos()
     // If the snake fills the entire grid, set gameover
     if (MAP_XWIDTH * MAP_YHEIGHT == tailLength)
         gameover = 1;
-    
+
     fruitX = get_random(MAP_XWIDTH);
     fruitY = get_random(MAP_YHEIGHT);
     while (!valid_fruit_pos())
@@ -343,6 +346,48 @@ void game_init(void)
 
     new_fruit_pos();
     draw_image(start);
+}
+
+void update_game_logic_only(void)
+{
+    int input = get_input();
+    // get_state_input(); // Excluded as it mainly handles draw mode and reset/start which are not part of pure logic loop here
+    if (valid_dir(input))
+    {
+        dir = input;
+    }
+    move_snake();
+
+    check_snake_collision();
+
+    if (check_fruit_collision())
+    {
+        new_fruit_pos();
+        score++;
+        // update_score_display(); // Excluded
+        // Increase tail length
+        if (tailLength < MAP_XWIDTH * MAP_YHEIGHT)
+        {
+            tailLength++;
+            tailX[tailLength - 1] = tailX[0];
+            tailY[tailLength - 1] = tailY[0];
+        }
+    }
+
+    if (gameover)
+    {
+        // Reset necessary variables to keep simulation running
+        gameover = 0;
+        headX = MAP_XWIDTH / 2;
+        headY = MAP_YHEIGHT / 2;
+        // Reset tail to prevent immediate collision
+        tailLength = 2;
+        for (int i = 0; i < tailLength; i++)
+        {
+            tailX[i] = headX;
+            tailY[i] = headY;
+        }
+    }
 }
 
 // Main game tick function to handle game state updates and game logic
